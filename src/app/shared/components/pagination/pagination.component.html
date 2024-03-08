@@ -1,0 +1,26 @@
+
+<div class="grid sm:grid-cols-3 sm:grid-rows-1 gap-4">
+
+    <!-- Pages -->
+    @if (maxPages > 1) {
+        <div class="join flex justify-center items-center sm:col-start-2">
+            <button class="join-item btn btn-outline btn-primary btn-md text-xl font-bold" (click)="changePage(-1)">«</button>
+            <button class="join-item btn btn-outline btn-primary btn-md" (click)="changePage(0, paginators[0])" [ngClass]="{'btn-active': actualPage === paginators[0]}">{{paginators[0]}}</button>
+            <button class="join-item btn btn-outline btn-primary btn-md" (click)="changePage(0, paginators[1])" [ngClass]="{'btn-active': actualPage === paginators[1]}">{{paginators[1]}}</button>
+            @if (maxPages > 2) { <button class="join-item btn btn-outline btn-primary btn-md" (click)="changePage(0, paginators[2])" [ngClass]="{'btn-active': actualPage === paginators[2]}">{{paginators[2]}}</button> }
+            @if (maxPages > 5) { <button class="join-item btn btn-disabled">...</button> }
+            @if (maxPages > 4) { <button class="join-item btn btn-outline btn-primary btn-md" (click)="changePage(0, maxPages - 1)" [ngClass]="{'btn-active': actualPage === maxPages - 1}">{{maxPages - 1}}</button> }
+            @if (maxPages > 3) { <button class="join-item btn btn-outline btn-primary btn-md" (click)="changePage(0, maxPages)" [ngClass]="{'btn-active': actualPage === maxPages}">{{maxPages}}</button> }
+            <button class="join-item btn btn-outline btn-primary btn-md text-xl font-bold" (click)="changePage(1)">»</button>
+        </div>
+    }
+
+    <!-- Items -->
+    <select (change)="itemsPerPageEdit($event)" class="select select-bordered w-min justify-self-center sm:justify-self-end sm:col-start-3 sm:mr-24">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>50</option>
+    </select>
+
+</div>

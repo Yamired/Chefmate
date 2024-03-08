@@ -1,0 +1,67 @@
+<button class="btn btn-success" (click)="changeEditModalVisibility('show')">Ajouter</button>
+<dialog id="editIngredientModal" class="modal modal-bottom sm:modal-middle" #editIngredientModal>
+
+    <form [formGroup]="ingredientForm" class="modal-box bg-base-200 !max-w-none sm:!w-11/12 lg:!w-8/12" (ngSubmit)="createIngredient()">
+
+        <div class="grid gap-6 sm:grid-cols-2">
+            <label class="form-control w-full">
+                <div class="label p-1">
+                    <span class="label-text text-lg">Nom de l'ingrédient</span>
+                </div>
+                <input type="text" formControlName="name" placeholder="Entrez le nom" class="input input-bordered input-sm w-full" />
+                <div class="label min-h-8 p-1">
+                    <span class="label-text-alt text-error text-xs">
+                        @if(name?.invalid && (name?.dirty || name?.touched)) {
+                            @if(name?.errors?.['required']) { Le nom de l'ingrédient est obligatoire }
+                        }
+                    </span>
+                </div>
+            </label>
+
+            <label class="form-control w-full">
+                <div class="label p-1">
+                    <span class="label-text text-lg">Choisir une image</span>
+                </div>
+                <input type="file" (change)="storeImage($event)" accept=".webp,.jpg,.jpeg,.png" formControlName="picture"  class="file-input file-input-bordered file-input-primary file-input-sm w-full" />
+                <div class="label min-h-8 p-1">
+                    <span class="label-text-alt text-error text-xs">
+                        @if(picture?.invalid && (picture?.dirty || picture?.touched)) {
+                            @if(picture?.errors?.['required']) { L'image est obligatoire }
+                        }
+                    </span>
+                </div>
+            </label>
+        </div>
+
+        <div class="bg-base-300 rounded-xl p-6 grid grid-cols-1 gap-3">
+            @for (group of groups; track $index) {
+                <div class="bg-base-100 rounded-md flex flex-col">
+                    <input type="text" placeholder="Choisissez un nom..." [value]="group.Name" class="input input-ghost input-xs max-w-xs" />
+                    <div class="flex items-center gap-3 m-3 min-h-6">
+                        @for (spec of group.SpecList; track $index) {
+                            <div class="badge badge-accent flex gap-2">
+                                {{spec.Name}}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </div>
+                        }
+                    </div>
+                    <button class="btn btn-outline btn-primary btn-sm max-w-xs m-3" (click)="createSpec($index)">Ajouter une spec</button>
+                </div>
+            }
+            <button class="btn btn-sm max-w-xs" (click)="createGroup()">Ajouter un groupe de spec</button>
+        </div>
+
+        <div class="flex justify-center gap-6 mt-4">
+            <form method="dialog">
+                <button class="btn btn-primary btn-outline px-14">Fermer</button>
+            </form>
+            <button type="submit" class="btn btn-accent px-14">Ajouter</button>
+        </div>
+
+    </form>
+
+    <form method="dialog" class="modal-backdrop">
+        <button> <!-- Fermeture de la modale lorsqu'on clique à l'extérieur --> </button>
+    </form>
+
+</dialog>

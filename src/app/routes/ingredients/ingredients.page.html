@@ -1,0 +1,154 @@
+<article class="p-[5vw] flex flex-col gap-8">
+
+    <h2 class="text-4xl mb-5 font-bold">Liste des ingrédients</h2>
+
+    <div class="flex flex-wrap gap-3">
+        <label class="input input-bordered flex items-center gap-2">
+            <input type="text" class="grow" placeholder="Rechercher par nom" (input)="changeSearchValue($event)" [(ngModel)]="searchIngredientValue"/>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" /></svg>
+        </label>
+        <button class="btn btn-error" [disabled]="this.selectedIngredients.length === 0" (click)="changeDeleteModalVisibility('show')">Supprimer</button>
+        <app-create-ingredient (newIngredientEvent)="addIngredientToList($event, 'user')"></app-create-ingredient>
+        <button class="btn btn-circle btn-accent ml-auto" (click)="scrollBottom()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m12 16.175l3.9-3.875q.275-.275.688-.288t.712.288q.275.275.275.7t-.275.7l-4.6 4.6q-.15.15-.325.213t-.375.062q-.2 0-.375-.062T11.3 18.3l-4.6-4.6q-.275-.275-.288-.687T6.7 12.3q.275-.275.7-.275t.7.275zm0-6L15.9 6.3q.275-.275.688-.287t.712.287q.275.275.275.7t-.275.7l-4.6 4.6q-.15.15-.325.213t-.375.062q-.2 0-.375-.062T11.3 12.3L6.7 7.7q-.275-.275-.288-.687T6.7 6.3q.275-.275.7-.275t.7.275z"/></svg>
+        </button>
+    </div>
+
+    <div class="overflow-x-auto">
+        <p class="italic mb-3">Nombre d'ingrédients total : {{totalIngredientsCount}}</p>
+        <table class="table table-zebra text-center">
+            <thead class="text-secondary text-sm bg-base-300">
+                <tr>
+                    <th>
+                        <label>
+                            <input type="checkbox" class="checkbox" [(ngModel)]="globalSelectState" (change)="selectIngredients($event, undefined, true)"/>
+                        </label>
+                    </th>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Modifier</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (ingredient of ingredientList; track $index) {
+                    <tr class="hover">
+                        <th>
+                            <label>
+                                <input type="checkbox" class="checkbox" [checked]="isSelected(ingredient)" (change)="selectIngredients($event, $index, undefined)"/>
+                            </label>
+                        </th>
+                        <td>
+                            <div class="avatar">
+                                <div class="mask mask-squircle w-16 h-16">
+                                    <img [src]="getFileURL(ingredient, ingredient.Picture)" alt="Pictogramme ingrédient" />
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {{ingredient.Name}}
+                        </td>
+                        <th>
+                            <button class="btn btn-ghost">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h8.925l-2 2H5v14h14v-6.95l2-2V19q0 .825-.587 1.413T19 21zm4-6v-4.25l9.175-9.175q.3-.3.675-.45t.75-.15q.4 0 .763.15t.662.45L22.425 3q.275.3.425.663T23 4.4q0 .375-.137.738t-.438.662L13.25 15zM21.025 4.4l-1.4-1.4zM11 13h1.4l5.8-5.8l-.7-.7l-.725-.7L11 11.575zm6.5-6.5l-.725-.7zl.7.7z"/></svg>
+                            </button>
+                        </th>
+                    </tr>
+                } @empty {
+                    @if (totalIngredientsCount <= 0) {
+                        <tr>
+                            <td colspan="4" class="text-error">Aucun ingrédient enregistré</td>
+                        </tr>
+                    } @else {
+                        @for(_ of [].constructor(actualSearchItemsPerPage);track $index) {
+                            <tr>
+                                <th>
+                                    <label>
+                                        <input type="checkbox" class="checkbox" />
+                                    </label>
+                                </th>
+                                <td>
+                                    <div class="avatar">
+                                        <div class="skeleton w-16 h-16"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="skeleton w-18 h-6"></div>
+                                </td>
+                                <th>
+                                    <button class="btn btn-ghost">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h8.925l-2 2H5v14h14v-6.95l2-2V19q0 .825-.587 1.413T19 21zm4-6v-4.25l9.175-9.175q.3-.3.675-.45t.75-.15q.4 0 .763.15t.662.45L22.425 3q.275.3.425.663T23 4.4q0 .375-.137.738t-.438.662L13.25 15zM21.025 4.4l-1.4-1.4zM11 13h1.4l5.8-5.8l-.7-.7l-.725-.7L11 11.575zm6.5-6.5l-.725-.7zl.7.7z"/></svg>
+                                    </button>
+                                </th>
+                            </tr>
+                        }
+                    }
+                }
+                @if(ingredientList.length > 0 && ingredientList.length < actualSearchItemsPerPage) {
+                    @for(_ of [].constructor(actualSearchItemsPerPage - ingredientList.length);track $index) {
+                        <tr>
+                            <th>
+                                <label>
+                                    <input type="checkbox" class="checkbox" disabled/>
+                                </label>
+                            </th>
+                            <td>
+                                <div class="avatar">
+                                    <div class="bg-base-300 rounded-2xl w-16 h-16"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="bg-base-300 rounded-2xl w-18 h-6"></div>
+                            </td>
+                            <th class="relative">
+                                <div class="bg-base-300 rounded-md w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                            </th>
+                        </tr>
+                    }
+                }
+            </tbody>
+            @if (totalIngredientsCount > 0) {
+                <tfoot class="text-secondary text-sm">
+                    <tr>
+                        <th></th>
+                        <th>Image</th>
+                        <th>Nom</th>
+                        <th>Modifier</th>
+                    </tr>
+                </tfoot>
+            }
+        </table>
+    </div>
+
+    <app-pagination [maxPages]="actualSearchPageNumber" (pageValueEvent)="changePageEvent($event, actualSearchItemsPerPage)" (itemsPerPageValueEvent)="changePageEvent(1, $event)"></app-pagination>
+
+    <app-scroll-top></app-scroll-top>
+
+    <dialog id="my_modal_2" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg">Hello!</h3>
+            <p class="py-4">Press ESC key or click outside to close</p>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+
+    <dialog id="deleteIngredientsModal" class="modal modal-bottom sm:modal-middle" #deleteIngredientsModal>
+        <div class="modal-box sm:max-w-96">
+            <div class="flex gap-8 items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24"><path fill="#d65c5c" d="M4.47 19h15.06L12 5.99zM13 18h-2v-2h2zm0-4h-2v-4h2z" opacity=".3"/><path fill="#d65c5c" d="M1 21h22L12 2zm3.47-2L12 5.99L19.53 19zM11 16h2v2h-2zm0-6h2v4h-2z"/></svg>
+                <h4 class="text-xl">Voulez-vous vraiment supprimer tous les ingrédients sélectionnés ?</h4>
+            </div>
+            <div class="flex justify-center gap-6 mt-4">
+                <form method="dialog">
+                    <button class="btn btn-primary btn-outline max-w-36 px-14">Fermer</button>
+                </form>
+                <button (click)="deleteIngredients()" class="btn btn-error max-w-36 px-14">Supprimer</button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button> <!-- Fermeture de la modale lorsqu'on clique à l'extérieur --> </button>
+        </form>
+    </dialog>
+
+</article>
